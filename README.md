@@ -283,7 +283,7 @@ Realizar las pruebas secundarias tiene sus ventajas pero también sus inconvenie
 > IMPORTANTE: Para que no haya una saturación con el envío de mensajes NO se envían las velocidades de todas las plataformas en todo momento, solo se envían las velocidades de las plataformas del escenario en el que se encuentran los jugadores en un momento determinado.
 
 
-> ## 6. Instrucciones para ejecutar la aplicación
+> ## 7. Instrucciones para ejecutar la aplicación (Fase 4)
 
 > El juego se ejecuta en el localhost, por lo tanto no hace falta abrir el Visual Studio para ejecutar la aplicación. Por lo tanto, los pasos para abrir el servidor y acceder al juego son los siguientes:
 
@@ -303,6 +303,16 @@ Realizar las pruebas secundarias tiene sus ventajas pero también sus inconvenie
 
 > Con el servidor abierto desde la consola de comandos y la aplicación abierta desde el visual, también se puede empezar a jugar
 
+> ## 8. Instrucciones para ejecutar la aplicación (Fase 5)
+
+> - El servidor de heroku ha de estar abierto para habilitar el servidor (https://guindereis-server-final.herokuapp.com/)
+
+>  Se podrá acceder a la aplicación desde distintas plataformas de juego listadas a continuación:
+
+>   - https://gamejolt.com/games/guindereis/626985
+>   - https://www.outpan.com/app/83a072ffeb/gindereis
+>   - https://www.newgrounds.com/portal/view/801495?updated=1624447358
+>   - https://revision.gamedistribution.com/aae9ff52c3334a48b9995b8c092a2651/?correlator=1624449077147
 
 
 
