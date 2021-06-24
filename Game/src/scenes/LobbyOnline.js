@@ -7,6 +7,8 @@ class LobbyOnline extends Phaser.Scene {
         this.data = data;
         this.soundManager = data.soundManager
         this.partidaDatos = data.partida;
+        this.p1Name = '';
+        this.p2Name = '';
         console.log(this.partidaDatos.nombre);
 
     }
@@ -49,6 +51,8 @@ class LobbyOnline extends Phaser.Scene {
 
 
         this.inputTextP1.addListener('keyup');
+
+        this.inputTextP1.value="";
 
 
         var inputTextpp1 = this.inputTextP1.getChildByName('nameField');
@@ -230,6 +234,8 @@ class LobbyOnline extends Phaser.Scene {
 
 
         this.inputTextP2.addListener('keyup');
+
+        this.inputTextP2.value="";
         var inputTextpp2 = this.inputTextP2.getChildByName('nameField');
 
         $(inputTextpp2).focus(function () {

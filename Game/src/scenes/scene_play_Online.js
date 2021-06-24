@@ -1,5 +1,5 @@
 import Escenario from '../gameObjects/Escenario.js';
-let dir="https://guindereis-server-final.herokuapp.com/"
+let dir = "https://guindereis-server-final.herokuapp.com/"
 class Scene_play_Online extends Phaser.Scene {
     constructor() {
         super({ key: "Scene_play_Online" });
@@ -18,7 +18,9 @@ class Scene_play_Online extends Phaser.Scene {
         this.plataformasNieveP1 = [];
         this.plataformasNieveP2 = [];
         this.ultimaActualizacionPlataforma = 0;
-        this.ActivarPausa=false;
+        this.ActivarPausa = false;
+        this.ArraysPlataformas=false;
+        this.ActivarControles = false;
 
     }
     init(data) {
@@ -26,6 +28,10 @@ class Scene_play_Online extends Phaser.Scene {
         this.data = data;
         this.data.lobby;
         this.online = data.online
+        this.ultimaActualizacionPlataforma = 0;
+        this.ActivarPausa = false;
+        this.ArraysPlataformas=false;
+        this.ActivarControles = false;
         if (this.online) {
             this.partidaDatos = data.partida;
             this.yo = data.yo
@@ -62,7 +68,7 @@ class Scene_play_Online extends Phaser.Scene {
     create() {
 
         this.borrarIntervalos();
-        this.ActivarControles = false;
+      
         /*        
            let tamanio=escenas.length;
              let i=0;
@@ -89,8 +95,8 @@ class Scene_play_Online extends Phaser.Scene {
 
         // ! poner un fondo enorme que tape todo para simular que esta cargando todo
 
-        this.loading1BG = this.add.image(0, 160, "Cargando1").setOrigin(0, 0).setScale(0.56,0.56).setDepth(1001);
-        this.loading2BG = this.add.image(0, 520, "Cargando2").setOrigin(0, 0).setScale(0.56,0.56).setDepth(1001);
+        this.loading1BG = this.add.image(0, 160, "Cargando1").setOrigin(0, 0).setScale(0.56, 0.56).setDepth(1001);
+        this.loading2BG = this.add.image(0, 520, "Cargando2").setOrigin(0, 0).setScale(0.56, 0.56).setDepth(1001);
 
 
         //Pensar esto un pcoo mejor
@@ -975,83 +981,107 @@ class Scene_play_Online extends Phaser.Scene {
             }
 
 
-        } else if (this.online && this.ActivarControles) {
+        } else if (this.online) {
 
             if (this.yo.side === 1) {
+
+
+                let t2 = time % 80;
+
+                if (((t2 >= 0 && t2 <= 5) || (t2 >= 60 && t2 <= 65)) && this.ArraysPlataformas) {
+
+
+
+                    let aux = []
+                    let esce = this.playerU.position;
+                    let lenghtArray = this.escenarios[this.playerU.position].plataformasP1.length;
+
+
+
+                    for (let j = 0; j < lenghtArray; j++) {
+
+                        let i = j * 3
+
+                        aux[i] = this.escenarios[this.playerU.position].plataformasP1[j].x
+                        aux[i + 1] = this.escenarios[this.playerU.position].plataformasP1[j].y
+                        aux[i + 2] = this.escenarios[this.playerU.position].plataformasP1[j].body.velocity;
+
+                    }
+
+
+                    let msg = {
+                        tipo: "PLATFORM",
+                        arrayPlatforms: aux,
+                        escenario: esce
+
+                    }
+                    // console.log(msg);
+
+                    this.handler.send(JSON.stringify(msg));
+
+                }
+
                 if (!this.escenasActivas[0]) {
-                    let w = false;
-                    let a = false;
-                    let e = false;
-                    let d = false;
-                    let touching = true;
-                    let t = time % 60;
-                    let t2 = time % 80;
+
+                    if (this.ActivarControles) {
+                        let w = false;
+                        let a = false;
+                        let e = false;
+                        let d = false;
+                        let touching = true;
+                        let t = time % 60;
 
 
 
 
-                    if (this.keyboardP1.A.isDown === true) {
-                        a = true;
-                        this.playerU.body.setVelocityX(-this.playerU.velocidad);
-                        if (this.playerU.body.touching.down) {
-                            this.playerU.anims.play("CorrerIzquierdaP1", true);
-                        } else {
-                            touching = false;
-                            this.playerU.anims.play("SaltoIzquierdaP1", true);
+
+                        if (this.keyboardP1.A.isDown === true) {
+                            a = true;
+                            this.playerU.body.setVelocityX(-this.playerU.velocidad);
+                            if (this.playerU.body.touching.down) {
+                                this.playerU.anims.play("CorrerIzquierdaP1", true);
+                            } else {
+                                touching = false;
+                                this.playerU.anims.play("SaltoIzquierdaP1", true);
+                            }
+
+                        }
+                        if (this.keyboardP1.D.isDown === true) {
+                            d = true;
+                            this.playerU.body.setVelocityX(this.playerU.velocidad);
+                            if (this.playerU.body.touching.down) {
+                                this.playerU.anims.play("CorrerDerechaP1", true);
+                            } else {
+                                touching = false;
+                                this.playerU.anims.play("SaltoDerechaP1", true);
+                            }
+
+
                         }
 
-                    }
-                    if (this.keyboardP1.D.isDown === true) {
-                        d = true;
-                        this.playerU.body.setVelocityX(this.playerU.velocidad);
-                        if (this.playerU.body.touching.down) {
-                            this.playerU.anims.play("CorrerDerechaP1", true);
-                        } else {
-                            touching = false;
-                            this.playerU.anims.play("SaltoDerechaP1", true);
+                        if (this.keyboardP1.D.isDown === false && this.keyboardP1.A.isDown === false && this.keyboardP1.W.isDown === false) {
+                            w = false;
+                            a = false;
+                            d = false;
+
+
+
+
+                            if (this.playerU.body.velocity.x > 0) {
+                                this.playerU.anims.stop();
+                                this.playerU.anims.play("IdleDerechaP1", true);
+                            }
+                            if (this.playerU.body.velocity.x < 0) {
+                                this.playerU.anims.stop();
+                                this.playerU.anims.play("IdleIzquierdaP1", true);
+                            }
+                            this.playerU.body.setVelocityX(0);
+
+
+
                         }
 
-
-                    }
-
-                    if (this.keyboardP1.D.isDown === false && this.keyboardP1.A.isDown === false && this.keyboardP1.W.isDown === false) {
-                        w = false;
-                        a = false;
-                        d = false;
-
-
-
-
-                        if (this.playerU.body.velocity.x > 0) {
-                            this.playerU.anims.stop();
-                            this.playerU.anims.play("IdleDerechaP1", true);
-                        }
-                        if (this.playerU.body.velocity.x < 0) {
-                            this.playerU.anims.stop();
-                            this.playerU.anims.play("IdleIzquierdaP1", true);
-                        }
-                        this.playerU.body.setVelocityX(0);
-
-
-
-                    }
-
-                    var msg = {
-                        tipo: "BOTONES",
-                        w: w,
-                        a: a,
-                        side: 1,
-                        d: d,
-                        e: e,
-                        touching: touching
-                    }
-
-                    if (this.keyboardP1.W.isDown === true && this.playerU.body.touching.down) {
-
-                        this.playerU.setVelocityY(-750); //cambiar para que salte menos y poder bajar plataformas
-                        w = true;
-
-                        let msgf = {
+                        var msg = {
                             tipo: "BOTONES",
                             w: w,
                             a: a,
@@ -1060,66 +1090,52 @@ class Scene_play_Online extends Phaser.Scene {
                             e: e,
                             touching: touching
                         }
-                        this.handler.send(JSON.stringify(msgf));
-                    }
 
-                    var msg = {
-                        tipo: "BOTONES",
-                        w: w,
-                        a: a,
-                        side: 1,
-                        d: d,
-                        e: e,
-                        touching: touching
-                    }
-                    if (this.handler.readyState === 1 && ((t >= 0 && t <= 5) || (t >= 10 && t <= 15) || (t >= 20 && t <= 25) || (t >= 30 && t <= 35))) {
-                        this.handler.send(JSON.stringify(msg));
-                    }
+                        if (this.keyboardP1.W.isDown === true && this.playerU.body.touching.down) {
 
-                    if (this.handler.readyState === 1 && ((t >= 0 && t <= 5) || (t >= 10 && t <= 15) || (t >= 20 && t <= 25) || (t >= 30 && t <= 35))) {
-                        var that = this;
-                        let msgPos = {
-                            tipo: "POSICION",
-                            x: that.playerU.x,
-                            y: that.playerU.y,
-                            side: 1
+                            this.playerU.setVelocityY(-750); //cambiar para que salte menos y poder bajar plataformas
+                            w = true;
+
+                            let msgf = {
+                                tipo: "BOTONES",
+                                w: w,
+                                a: a,
+                                side: 1,
+                                d: d,
+                                e: e,
+                                touching: touching
+                            }
+                            this.handler.send(JSON.stringify(msgf));
                         }
 
-                        this.handler.send(JSON.stringify(msgPos));
-                    }
-
-                    if (((t2 >= 0 && t2 <= 5) || (t2 >= 60 && t2 <= 65))) {
-
-
-
-                        let aux = []
-                        let esce = this.playerU.position;
-                        let lenghtArray = this.escenarios[this.playerU.position].plataformasP1.length;
-
-
-
-                        for (let j = 0; j < lenghtArray; j++) {
-
-                            let i = j * 3
-
-                            aux[i] = this.escenarios[this.playerU.position].plataformasP1[j].x
-                            aux[i + 1] = this.escenarios[this.playerU.position].plataformasP1[j].y
-                            aux[i + 2] = this.escenarios[this.playerU.position].plataformasP1[j].body.velocity;
-
+                        var msg = {
+                            tipo: "BOTONES",
+                            w: w,
+                            a: a,
+                            side: 1,
+                            d: d,
+                            e: e,
+                            touching: touching
+                        }
+                        if (this.handler.readyState === 1 && ((t >= 0 && t <= 5) || (t >= 10 && t <= 15) || (t >= 20 && t <= 25) || (t >= 30 && t <= 35))) {
+                            this.handler.send(JSON.stringify(msg));
                         }
 
+                        if (this.handler.readyState === 1 && ((t >= 0 && t <= 5) || (t >= 10 && t <= 15) || (t >= 20 && t <= 25) || (t >= 30 && t <= 35))) {
+                            var that = this;
+                            let msgPos = {
+                                tipo: "POSICION",
+                                x: that.playerU.x,
+                                y: that.playerU.y,
+                                side: 1
+                            }
 
-                        let msg = {
-                            tipo: "PLATFORM",
-                            arrayPlatforms: aux,
-                            escenario: esce
-
+                            this.handler.send(JSON.stringify(msgPos));
                         }
-                        // console.log(msg);
-
-                        this.handler.send(JSON.stringify(msg));
-
                     }
+
+
+
 
 
                 }
@@ -1129,7 +1145,46 @@ class Scene_play_Online extends Phaser.Scene {
 
             } else if (this.yo.side === 2) {
 
-                if (!this.escenasActivas[1]) {
+                let t2 = time % 80;
+
+                
+                if (((t2 >= 5 && t2 <= 10) || (t2 >= 65 && t2 <= 70)) && this.ArraysPlataformas) {
+
+
+
+                    let aux = []
+                    let esce = this.playerD.position;
+                    let lenghtArray = this.escenarios[this.playerD.position].plataformasP2.length;
+
+
+
+                    for (let j = 0; j < lenghtArray; j++) {
+
+                        let i = j * 3
+
+                        aux[i] = this.escenarios[this.playerD.position].plataformasP2[j].x
+                        aux[i + 1] = this.escenarios[this.playerD.position].plataformasP2[j].y
+                        aux[i + 2] = this.escenarios[this.playerD.position].plataformasP2[j].body.velocity;
+
+                    }
+
+
+                    let msg = {
+                        tipo: "PLATFORM",
+                        arrayPlatforms: aux,
+                        escenario: esce
+
+                    }
+                    // console.log(msg);
+
+                    this.handler.send(JSON.stringify(msg));
+
+                }
+
+
+                if (!this.escenasActivas[1] && this.ActivarControles) {
+
+                    
 
                     let w = false;
                     let a = false;
@@ -1137,7 +1192,7 @@ class Scene_play_Online extends Phaser.Scene {
                     let d = false;
                     let touching = true;
                     let t = time % 60;
-                    let t2 = time % 80;
+                    
 
 
 
@@ -1240,39 +1295,6 @@ class Scene_play_Online extends Phaser.Scene {
 
 
 
-                    if (((t2 >= 5 && t2 <= 10)  || (t2 >= 65 && t2 <= 70))) {
-
-
-
-                        let aux = []
-                        let esce = this.playerD.position;
-                        let lenghtArray = this.escenarios[this.playerD.position].plataformasP2.length;
-
-
-
-                        for (let j = 0; j < lenghtArray; j++) {
-
-                            let i = j * 3
-
-                            aux[i] = this.escenarios[this.playerD.position].plataformasP2[j].x
-                            aux[i + 1] = this.escenarios[this.playerD.position].plataformasP2[j].y
-                            aux[i + 2] = this.escenarios[this.playerD.position].plataformasP2[j].body.velocity;
-
-                        }
-
-
-                        let msg = {
-                            tipo: "PLATFORM",
-                            arrayPlatforms: aux,
-                            escenario: esce
-
-                        }
-                        // console.log(msg);
-
-                        this.handler.send(JSON.stringify(msg));
-
-                    }
-
 
 
 
@@ -1292,9 +1314,9 @@ class Scene_play_Online extends Phaser.Scene {
             this.keyboardP2.ESC.isDown = false;
             // this.pararP1();
             // this.pararP2();
-            if (this.online&& this.ActivarPausa) {
-                this.ActivarPausa=false;
-                this.ActivarControles=false;
+            if (this.online && this.ActivarPausa) {
+                this.ActivarPausa = false;
+                this.ActivarControles = false;
                 this.scene.launch("Pause", { escena: this, soundManager: this.soundManager, online: this.online, yo: this.yo, partida: this.partidaDatos })
             }
 
@@ -1456,8 +1478,9 @@ class Scene_play_Online extends Phaser.Scene {
             this.elcronoP2 = setInterval(() => { this.tiempoP2(empP2) }, 10);
             this.playP2 = true;
         }
+        this.ArraysPlataformas=true;
         this.ActivarControles = true;
-        this.ActivarPausa=true;
+        this.ActivarPausa = true;
 
 
 
@@ -3280,7 +3303,7 @@ class Scene_play_Online extends Phaser.Scene {
         let partidaID = this.partidaDatos.id;
         $.ajax({
             method: "PUT",
-            url: dir+'partida/player/' + partidaID,
+            url: dir + 'partida/player/' + partidaID,
             data: JSON.stringify(player),
             processData: false,
             headers: {
@@ -3314,11 +3337,11 @@ class Scene_play_Online extends Phaser.Scene {
         if (players[0].status === "" || players[0].status === "disconected" || players[0].status === null) {
             this.borrarIntervalos();
 
-            let player=new Object();
-            player.user = this.yo.user ;
-            player.status = this.yo.status ;
-            player.id = this.yo.id ;
-            player.side = this.yo.side ;
+            let player = new Object();
+            player.user = this.yo.user;
+            player.status = this.yo.status;
+            player.id = this.yo.id;
+            player.side = this.yo.side;
 
 
             //! Se ha caido un jugador
@@ -3347,11 +3370,11 @@ class Scene_play_Online extends Phaser.Scene {
         if (players[1].status === "" || players[1].status === "disconected" || players[1].status === null) {
             this.borrarIntervalos();
 
-            let player=new Object();
-            player.user = this.yo.user ;
-            player.status = this.yo.status ;
-            player.id = this.yo.id ;
-            player.side = this.yo.side ;
+            let player = new Object();
+            player.user = this.yo.user;
+            player.status = this.yo.status;
+            player.id = this.yo.id;
+            player.side = this.yo.side;
 
 
             // ? Desconectamos del socket
@@ -3760,7 +3783,7 @@ class Scene_play_Online extends Phaser.Scene {
                 that.empezar();
                 that.loading1BG.destroy();
                 that.loading2BG.destroy();
-                
+
             } else if (message.tipo = "PLATFORM") {
                 //console.log("LO QUE ME LLEGÓ", message);
                 that.adjustplatforms(message);
@@ -3773,10 +3796,10 @@ class Scene_play_Online extends Phaser.Scene {
 
 
 
-    habilitarPausa(){
+    habilitarPausa() {
         console.log("vamos a activar la pausa")
-        setTimeout(()=>{this.ActivarPausa=true},300)
-    
+        setTimeout(() => { this.ActivarPausa = true }, 300)
+
     }
 
 

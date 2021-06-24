@@ -59,7 +59,7 @@ class CintaP2 extends Phaser.Scene {
                 w: false,
                 s: false,
                 e: false,
-                dato:0
+                dato: 0
 
             }
             this.data.escena.handler.send(JSON.stringify(msg));
@@ -69,7 +69,7 @@ class CintaP2 extends Phaser.Scene {
 
 
     update() {
-        if (this.online&& this.data.escena.yo.side == 2) {
+        if (this.online && this.data.escena.yo.side == 2) {
 
 
             if (this.keyboard.A.isDown == true && this.keyLock == false) {
@@ -85,7 +85,7 @@ class CintaP2 extends Phaser.Scene {
                         w: false,
                         s: false,
                         e: false,
-                        dato:0
+                        dato: 0
 
                     }
                     this.data.escena.handler.send(JSON.stringify(msg));
@@ -104,7 +104,7 @@ class CintaP2 extends Phaser.Scene {
                         w: false,
                         s: false,
                         e: false,
-                        dato:0
+                        dato: 0
 
                     }
                     this.data.escena.handler.send(JSON.stringify(msg));
@@ -113,7 +113,7 @@ class CintaP2 extends Phaser.Scene {
 
 
 
-        } else if(!this.online|| this.online===null || this.online===undefined) {
+        } else if (!this.online || this.online === null || this.online === undefined) {
             if (this.keyboard.LEFT.isDown == true && this.keyLock == false) {
                 this.keyLock = true;
                 this.teclado.push('A');
@@ -155,13 +155,12 @@ class CintaP2 extends Phaser.Scene {
             this.data.escena.PCD.tint.onChange(0xE74C3C)
 
             this.data.escena.crearPortalGimnasioP2();
-            if (this.data.escena.online && this.data.escena.yo.side == 1) {
 
-                if(this.online && this.data.escena.yo.side == 1)  {
-                    this.data.escena.onMensajeHandler();
+            if (this.online && this.data.escena.yo.side == 1) {
+                this.data.escena.onMensajeHandler();
 
-                }
             }
+
 
 
             this.scene.stop(this);
@@ -211,6 +210,9 @@ class CintaP2 extends Phaser.Scene {
                 if (message.d === true) {
                     that.teclado.push('D');
                 }
+            } else if (message.tipo = "PLATFORM") {
+                //console.log("LO QUE ME LLEGÓ", message);                
+                that.data.escena.adjustplatforms(message);
             }
 
         }

@@ -454,6 +454,9 @@ class LaboratorioP1 extends Phaser.Scene {
 
 
 
+            }else if (message.tipo = "PLATFORM") {
+                //console.log("LO QUE ME LLEGÓ", message);                
+                that.data.escena.adjustplatforms(message);
             }
 
         }

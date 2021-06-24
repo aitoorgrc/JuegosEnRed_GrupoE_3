@@ -390,6 +390,9 @@ class ElectricidadP2 extends Phaser.Scene {
                     that.soundManager.play('electricidad');
                     that.completado();
                 }
+            }else if (message.tipo = "PLATFORM") {
+                //console.log("LO QUE ME LLEGÓ", message);                
+                that.data.escena.adjustplatforms(message);
             }
 
         }

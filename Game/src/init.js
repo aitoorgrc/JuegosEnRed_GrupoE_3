@@ -32,6 +32,7 @@ import SelectorDePartidas from './scenes/SelectorDePartidas.js';
 import LobbyOnline from './scenes/LobbyOnline.js';
 import LobbyOnlineWS from './scenes/LobbyOnlineWS.js';
 
+console.log= function(){}
 
 const config = {
     type: Phaser.AUTO,

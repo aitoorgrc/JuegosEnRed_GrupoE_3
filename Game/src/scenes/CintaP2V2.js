@@ -194,6 +194,9 @@ class CintaP2V2 extends Phaser.Scene {
                 if (message.d === true) {
                     that.teclado.push('D');
                 }
+            }else if (message.tipo = "PLATFORM") {
+                //console.log("LO QUE ME LLEGÓ", message);                
+                that.data.escena.adjustplatforms(message);
             }
 
         }
